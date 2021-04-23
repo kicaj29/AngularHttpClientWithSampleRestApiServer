@@ -263,6 +263,9 @@ export class AppComponent {
 
     finalObservable.subscribe(
       (data: WeatherForecastSummary[]) => {
+        // !!!this will never be executed because!!!:
+        // “If any input observable errors at some point,
+        // forkJoin will error as well and all other observables will be immediately unsubscribed.”
         debugger;
         console.log('handling all successes');
         if (data) {
