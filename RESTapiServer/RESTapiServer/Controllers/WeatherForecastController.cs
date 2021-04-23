@@ -5,6 +5,7 @@ using RESTapiServer.ApiErrors;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace RESTapiServer.Controllers
@@ -45,7 +46,8 @@ namespace RESTapiServer.Controllers
             }
             else
             {
-                return BadRequest(new BadRequest("This is bad request!"));
+                Thread.Sleep(2000);
+                return BadRequest(new BadRequest("This is bad request! " + DateTime.Now.Ticks.ToString()));
             }
         }
     }
