@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31025.194
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RESTapiServer", "RESTapiServer\RESTapiServer.csproj", "{3865B66C-1CEB-4184-9CC0-FF51C20453EA}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3865B66C-1CEB-4184-9CC0-FF51C20453EA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3865B66C-1CEB-4184-9CC0-FF51C20453EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3865B66C-1CEB-4184-9CC0-FF51C20453EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3865B66C-1CEB-4184-9CC0-FF51C20453EA}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {00F8458E-73D5-4B57-AA15-86BC67B437E1}
+	EndGlobalSection
+EndGlobal
