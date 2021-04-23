@@ -1,9 +1,10 @@
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { WeatherForecast } from './weather-forecast';
 import { catchError, map } from 'rxjs/operators';
 import { WeatherForecastSummary } from './weather-forecast-summary';
-import { of } from 'rxjs';
+import { forkJoin, Observable, of } from 'rxjs';
+import { WeatherForecastSummaryError } from './weather-forecast-summary-error';
 
 @Component({
   selector: 'app-root',
@@ -17,12 +18,12 @@ export class AppComponent {
 
   }
 
-  playWithGet() {
-
-    console.log("playing with get...");
+  playWithGetOption1(success: boolean) {
+    const params = new HttpParams()
+    .set('success', success.toString());
 
     // option 1 - simple usage
-    this._httpClient.get<WeatherForecast[]>('https://localhost:44351/WeatherForecast').subscribe(
+    this._httpClient.get<WeatherForecast[]>('https://localhost:44351/WeatherForecast', {params}).subscribe(
       (data: WeatherForecast[]) => {
         if (data) {
           data.forEach(wf => {
@@ -35,9 +36,15 @@ export class AppComponent {
         console.log(`status: ${error?.status}`);
       }
     );
+  }
+
+  playWithGetOption2(success: boolean) {
+
+    const params = new HttpParams()
+    .set('success', success.toString());
 
     // option 2 - use pipe, map, catchError
-    let observable = this._httpClient.get<WeatherForecast[]>('https://localhost:44351/WeatherForecast').pipe(
+    let observable = this._httpClient.get<WeatherForecast[]>('https://localhost:44351/WeatherForecast', {params}).pipe(
       map(
         (result: WeatherForecast[]) => {
           console.log('mapping success result...');
@@ -45,26 +52,144 @@ export class AppComponent {
           res.count = result.length;
           return res;
         },
-        (error: HttpErrorResponse) => {
-          console.log('THIS WILL NEVER BE EXECUTED !!!! mapping error result...');
-          let res = new WeatherForecastSummary();
-          res.count = -1;
+        (error) => {
+          console.log('I SHOULD NEVER BE EXECUTED');
+          // this will never be executed because map handles only success, to handle an error use catchError!
         }
       ),
-      catchError(error => {
+      catchError((error: HttpErrorResponse)  => {
         console.log("catching error...");
-        let res = new WeatherForecastSummary();
-        res.count = -1;
-        return of(res);
+        let newError = new WeatherForecastSummaryError();
+        newError.count = -1;
+        newError.errorMessage = error.error.statusDescription;
+        return of(newError);
       })
     );
 
     observable.subscribe(
+      (data: WeatherForecastSummary | WeatherForecastSummaryError) => {
+        // here 2 data types can be passed because it handles also value emitted by catchError!
+        debugger;
+        console.log(data.count);
+        if (data instanceof WeatherForecastSummaryError) {
+          console.log(`handled error message: ${data.errorMessage}`);
+        }
+      },
+      (error) => {
+        console.log('I SHOULD NEVER BE EXECUTED');
+        // this will never be executed because the error has been already handled in catchError method
+        // and now the value is treated as success
+      }
+    );
+  }
+
+  playWithGetOption2a(success: boolean) {
+
+    const params = new HttpParams()
+    .set('success', success.toString());
+
+    // option 2a - use pipe, map without catchError - then original error is handled in subscribe
+    let observable2a = this._httpClient.get<WeatherForecast[]>('https://localhost:44351/WeatherForecast', {params}).pipe(
+      map(
+        (result: WeatherForecast[]) => {
+          console.log('mapping success result...');
+          let res = new WeatherForecastSummary();
+          res.count = result.length;
+          return res;
+        },
+        (error) => {
+          console.log('I SHOULD NEVER BE EXECUTED');
+          // this will never be executed because map handles only success, to handle an error use catchError!
+        }
+      )
+    );
+
+    observable2a.subscribe(
       (data: WeatherForecastSummary) => {
         console.log(data.count);
       },
-      (error: WeatherForecastSummary) => {
-        console.log(`error: ${error.count}`);
+      (error: HttpErrorResponse) => {
+        console.log(`status: ${error?.error.statusDescription}`);
+        console.log(`status: ${error?.status}`);
+      }
+    );
+  }
+
+  playWithMultipleGets() {
+
+    const paramsTrue = new HttpParams()
+    .set('success', true.toString());
+
+    let observableSuccess = this._httpClient.get<WeatherForecast[]>('https://localhost:44351/WeatherForecast', {params: paramsTrue}).pipe(
+      map(
+        (result: WeatherForecast[]) => {
+          console.log('mapping success result...');
+          let res = new WeatherForecastSummary();
+          res.count = result.length;
+          return res;
+        },
+        (error) => {
+          console.log('I SHOULD NEVER BE EXECUTED');
+          // this will never be executed because map handles only success, to handle an error use catchError!
+        }
+      ),
+      catchError(error => {
+        console.log("catching error...");
+        let newError = new WeatherForecastSummaryError();
+        newError.count = -1;
+        newError.errorMessage = error.error.statusDescription;
+        return of(newError);
+      })
+    );
+
+    const paramsFalse = new HttpParams()
+      .set('success', false.toString());
+
+    let observableFail = this._httpClient.get<WeatherForecast[]>('https://localhost:44351/WeatherForecast', {params: paramsFalse}).pipe(
+      map(
+        (result: WeatherForecast[]) => {
+          console.log('mapping success result...');
+          let res = new WeatherForecastSummary();
+          res.count = result.length;
+          return res;
+        },
+        (error) => {
+          console.log('I SHOULD NEVER BE EXECUTED');
+          // this will never be executed because map handles only success, to handle an error use catchError!
+        }
+      ),
+      catchError(error => {
+        console.log("catching error...");
+        let newError = new WeatherForecastSummaryError();
+        newError.count = -1;
+        newError.errorMessage = error.error.statusDescription;
+        return of(newError);
+      })
+    );
+
+    const allRequests: Observable<WeatherForecastSummary>[] = [];
+    allRequests.push(observableSuccess);
+    allRequests.push(observableFail);
+
+    var finalObservable = forkJoin(allRequests);
+
+    finalObservable.subscribe(
+      (data: WeatherForecastSummary[] | WeatherForecastSummaryError[]) => {
+        debugger;
+        console.log('handling all successes');
+        if (data) {
+          data.forEach(d => {
+            console.log(d.count);
+            if (d instanceof WeatherForecastSummaryError) {
+              console.log(`handled error message: ${d.errorMessage}`);
+            }
+          });
+        }
+      },
+      (error) => {
+        console.log('I SHOULD NEVER BE EXECUTED');
+        // this will never be executed because the error has been already handled in catchError method
+        // and now the value is treated as success
       }
     );
 

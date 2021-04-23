@@ -1,4 +1,14 @@
 <h1>On this page you can test many different usages of Angular HTTP Client</h1>
 
-<button (click)="playWithGet()" >GET</button>
+<select #howToHandle>
+  <option value="true">Handle success</option>
+  <option value="false">Handle fail</option>
+</select>
+<button (click)="playWithGetOption1(howToHandle.value)" >GET - just subscribe</button>
+<button (click)="playWithGetOption2(howToHandle.value)" >GET - pipe, map, catchError</button>
+<button (click)="playWithGetOption2a(howToHandle.value)" >GET - pipe, map, no catchError</button>
+<br/>
+<br/>
+<br/>
+<button (click)="playWithMultipleGets()" >Multiple GETs</button>
 <router-outlet></router-outlet>

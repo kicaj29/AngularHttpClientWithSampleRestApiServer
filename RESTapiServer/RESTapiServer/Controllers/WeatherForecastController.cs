@@ -28,20 +28,25 @@ namespace RESTapiServer.Controllers
         [HttpGet]
         [ProducesResponseType(typeof(IEnumerable<WeatherForecast>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(BadRequest), StatusCodes.Status400BadRequest)]
-        public IActionResult Get()
+        public IActionResult Get(bool success)
         {
-            var rng = new Random();
-            var result = Enumerable.Range(1, 5).Select(index => new WeatherForecast
+            if (success)
             {
-                Date = DateTime.Now.AddDays(index),
-                TemperatureC = rng.Next(-20, 55),
-                Summary = Summaries[rng.Next(Summaries.Length)]
-            })
-            .ToArray();
+                var rng = new Random();
+                var result = Enumerable.Range(1, 5).Select(index => new WeatherForecast
+                {
+                    Date = DateTime.Now.AddDays(index),
+                    TemperatureC = rng.Next(-20, 55),
+                    Summary = Summaries[rng.Next(Summaries.Length)]
+                })
+                .ToArray();
+                return Ok(result);
 
-            return BadRequest(new BadRequest("This is bad request!"));
-
-            // return Ok(result);
+            }
+            else
+            {
+                return BadRequest(new BadRequest("This is bad request!"));
+            }
         }
     }
 }
