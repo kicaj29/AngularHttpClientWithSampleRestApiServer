@@ -58,6 +58,7 @@ export class AppComponent {
         }
       ),
       catchError((error: HttpErrorResponse)  => {
+        debugger;
         console.log("catching error...");
         let newError = new WeatherForecastSummaryError();
         newError.count = -1;
@@ -76,6 +77,7 @@ export class AppComponent {
         }
       },
       (error) => {
+        debugger;
         console.log('I SHOULD NEVER BE EXECUTED');
         // this will never be executed because the error has been already handled in catchError method
         // and now the value is treated as success
@@ -280,5 +282,42 @@ export class AppComponent {
         console.log(`status: ${error?.status}`);
       }
     );
+  }
+
+  playWithGetPromise(success: boolean) {
+    const params = new HttpParams()
+    .set('success', success.toString());
+
+    let promise = new Promise((resolve, reject) => {
+      this._httpClient.get<WeatherForecast[]>('https://localhost:44351/WeatherForecast', {params})
+        .toPromise()
+        .then(
+          (res: WeatherForecast[]) => { // Success
+            debugger;
+            resolve(res);
+          }
+        )
+        .catch(
+          (err: HttpErrorResponse) => {
+            debugger;
+            const newErr = new WeatherForecastSummaryError();
+            newErr.errorMessage = "Ups...";
+            reject(newErr);
+          }
+        )
+        ;
+    });
+
+    promise
+      .then((res: WeatherForecast[]) => {
+        debugger;
+        console.log(res.length);
+      })
+      .catch((err: WeatherForecastSummaryError) => {
+        debugger;
+        console.log(err.errorMessage);
+      });
+
+    return promise;
   }
 }
