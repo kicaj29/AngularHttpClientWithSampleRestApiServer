@@ -1,0 +1,8 @@
+<p>weather-forecast works!</p>
+
+<select #howToHandle>
+  <option value="true">Handle success</option>
+  <option value="false">Handle fail</option>
+</select>
+
+<button (click)="callRestApi(howToHandle.value)" >Call REST API</button>
