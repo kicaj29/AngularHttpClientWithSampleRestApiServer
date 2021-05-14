@@ -16,6 +16,20 @@ export class WeatherForecastService {
   }
 
   getWeatherForecast(success: boolean): Observable<WeatherForecast[]>{
+
+    /*let promise = new Promise((resolve, reject) => {
+      reject("dddddddddddd");
+    });
+
+    promise
+    .then(() => {
+
+    })
+    .catch(error => {
+      console.log('catching promise');
+    });*/
+
+    //throw new Error("ssssssssssssssss");
     return this.apiService.getWeatherForecast(success);
   }
 }

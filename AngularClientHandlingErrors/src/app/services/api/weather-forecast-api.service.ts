@@ -16,6 +16,6 @@ export class WeatherForecastApiService {
     const params = new HttpParams()
     .set('success', success.toString());
 
-    return this.httpClient.get<WeatherForecast[]>('https://localhost:44351/WeatherForecast', {params});
+    return this.httpClient.get<WeatherForecast[]>('https://localhostfff:44351/WeatherForecast', {params});
   }
 }

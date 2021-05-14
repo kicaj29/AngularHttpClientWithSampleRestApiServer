@@ -17,8 +17,13 @@ export class WeatherForecastComponent implements OnInit {
   callRestApi(success: boolean) {
     this.svc.getWeatherForecast(success).subscribe(
       (data: WeatherForecast[]) => {
+        debugger;
         console.log(data.length);
-      }
+      }/*,
+      (error) => {
+        debugger;
+        console.log('handling error in component');
+      }*/
     )
   }
 }
