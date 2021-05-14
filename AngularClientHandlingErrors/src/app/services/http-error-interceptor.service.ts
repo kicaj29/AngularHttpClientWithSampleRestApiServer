@@ -21,7 +21,6 @@ export class HttpErrorInterceptorService implements HttpInterceptor {
       retryWhen(error =>
         error.pipe(
           concatMap((error: HttpErrorResponse, count) => {
-            debugger;
             if (count <= this.retryCount && ((error.status == 0) || (error.status >= 500))) {
               // Continue retrying if retry count limit is not reached and
               // there is network outage on client side (status = 0)

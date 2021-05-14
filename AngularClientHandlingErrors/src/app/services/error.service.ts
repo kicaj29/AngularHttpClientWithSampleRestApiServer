@@ -21,4 +21,12 @@ export class ErrorService {
            'No Internet Connection';
   }
 
+  getClientStack(error: Error): string {
+    return error.stack;
+  }
+
+  getServerStack(error: HttpErrorResponse): string {
+    // handle stack trace
+    return 'stack';
+}
 }
