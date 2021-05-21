@@ -9,6 +9,7 @@ import { WeatherForecastComponent } from './weather-forecast/weather-forecast.co
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpErrorInterceptorService } from './services/http-error-interceptor.service';
 import { GlobalErrorHandlerService } from './services/global-error-handler.service';
+import { CacheInterceptor } from './services/cache-interceptor';
 
 
 @NgModule({
@@ -26,6 +27,7 @@ import { GlobalErrorHandlerService } from './services/global-error-handler.servi
   providers: [
     { provide: ErrorHandler, useClass: GlobalErrorHandlerService },
     { provide: HTTP_INTERCEPTORS, useClass: HttpErrorInterceptorService, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: CacheInterceptor, multi: true }
   ],
   bootstrap: [AppComponent]
 })
