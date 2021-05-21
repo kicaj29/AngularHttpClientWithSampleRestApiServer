@@ -17,16 +17,18 @@ export class HttpErrorInterceptorService implements HttpInterceptor {
   constructor() { }
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+    console.log('[HttpErrorInterceptorService]: started with url ' + request.urlWithParams + ', method: ' + request.method);
+
     return next.handle(request).pipe(
       retryWhen(error =>
         error.pipe(
           concatMap((error: HttpErrorResponse, count) => {
-            debugger;
             if (count <= this.retryCount && ((error.status == 0) || (error.status >= 500))) {
               // Continue retrying if retry count limit is not reached and
               // there is network outage on client side (status = 0)
               // or there is server error.
               // It is very unlikely that retry for client errors (4xx) would help so it is better to not load server in such cases.
+              console.log(`[HttpErrorInterceptorService]: retrying ${count} time...`);
               return of(error);
             }
             return throwError(error);

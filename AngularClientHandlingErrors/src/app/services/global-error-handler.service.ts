@@ -21,13 +21,13 @@ export class GlobalErrorHandlerService implements ErrorHandler {
 
     if (error instanceof HttpErrorResponse) {
       // Server error
-      console.log('handling server error...');
+      console.log('[GlobalErrorHandlerService]: handling server error...');
       message = this.errorService.getServerErrorMessage(error);
       stackTrace = this.errorService.getServerStack(error);
       this.zone.run(() => this.notifier.showError(message));
     } else {
       // Client Error
-      console.log('handling client error...');
+      console.log('[GlobalErrorHandlerService]: handling client error...');
       message = this.errorService.getClientErrorMessage(error);
       stackTrace = this.errorService.getClientStack(error);
       this.zone.run(() => this.notifier.showError(message));
